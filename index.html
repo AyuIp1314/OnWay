@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OnWay 順路 - 核心投資人與評審高真演示套裝</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0B1220',      // PPT 質感深藍底
+                            darkBlue: '#111A2E',  // 稍亮卡片藍
+                            midBlue: '#17243D',   // 中藍、邊框與按鈕
+                            lightBlue: '#1E293B', // 輸入框背景
+                            mint: '#4ECCA3',      // PPT 標誌薄荷綠
+                            mintHover: '#3db891', // 薄荷綠懸停色
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans HK', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        glow: '0 0 15px rgba(78, 204, 163, 0.35)',
+                        glowStrong: '0 0 25px rgba(78, 204, 163, 0.6)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans HK', sans-serif;
+            background-color: #030712;
+            overflow-x: hidden;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(78, 204, 163, 0.3);
+            border-radius: 2px;
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: rgba(78, 204, 163, 0.4);
+            animation: scanline 3s linear infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col lg:flex-row p-4 lg:p-8 gap-8 justify-center items-stretch">
+
+    <!-- 左側模擬手機展示 (演示接單端實際應用) -->
+    <div class="relative w-full max-w-md h-[840px] bg-[#030712] rounded-[50px] border-[10px] border-brand-midBlue shadow-2xl overflow-hidden flex flex-col shrink-0 mx-auto lg:mx-0">
+        
+        <!-- 頂部手機孔與狀態欄 -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-6 bg-brand-navy rounded-b-2xl z-50 flex items-center justify-center gap-1.5">
+            <div class="w-3 h-3 bg-slate-800 rounded-full"></div>
+            <div class="w-16 h-1 bg-slate-800 rounded-full"></div>
+        </div>
+        <div class="absolute top-6 left-0 right-0 px-8 flex justify-between text-[10px] text-slate-500 font-semibold z-40 select-none">
+            <span>OnWay Runner</span>
+            <div class="flex gap-1.5">
+                <i class="fa-solid fa-wifi text-brand-mint"></i>
+                <i class="fa-solid fa-battery-three-quarters text-brand-mint"></i>
+            </div>
+        </div>
+
+        <!-- APP 主容器 -->
+        <div id="app-container" class="relative w-full h-full bg-brand-navy flex flex-col justify-between overflow-hidden pt-8">
+            
+            <!-- ================= 起點頁 (StartPage) ================= -->
+            <div id="start-page" class="absolute inset-0 z-40 bg-brand-navy flex flex-col justify-between p-8 transition-all duration-500 ease-in-out">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#4ecca3_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                
+                <div class="relative z-10 text-center mt-12 flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-2xl bg-brand-midBlue border border-brand-mint/30 flex items-center justify-center mb-4 shadow-glow">
+                        <i class="fa-solid fa-route text-brand-mint text-3xl animate-pulse"></i>
+                    </div>
+                    <p class="text-xs uppercase tracking-[0.25em] text-brand-mint font-bold mb-1">OnWay 順路 APP</p>
+                    <h2 class="text-sm text-slate-400 font-medium tracking-wide">社區互助 ‧ 綠色微物流</h2>
+                </div>
+
+                <div class="relative z-10 flex flex-col items-center justify-center">
+                    <div class="mb-8 px-4 py-2 rounded-full bg-brand-midBlue/60 border border-brand-mint/10 text-[11px] text-slate-300 font-light flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brand-mint animate-ping"></span>
+                        「你順路賺茶錢，我付費慳時間！」 [cite: 1]
+                    </div>
+
+                    <button id="btn-enter" onclick="navigateTo('task-page')" class="group relative w-56 h-56 rounded-full bg-brand-navy border-4 border-brand-mint flex items-center justify-center shadow-glow transition-all duration-300 transform hover:scale-105 active:scale-95">
+                        <div class="absolute inset-0 rounded-full bg-brand-mint/10 animate-ping opacity-40"></div>
+                        <div class="absolute -inset-4 rounded-full bg-brand-mint/5 animate-pulse"></div>
+                        
+                        <div class="flex flex-col items-center">
+                            <span class="text-3xl font-black text-brand-mint tracking-widest group-hover:tracking-[0.2em] transition-all duration-300">OnWay</span>
+                            <span class="text-lg font-bold text-white tracking-[0.4em] mt-1 ml-1">順路</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="relative z-10 text-center mb-6">
+                    <p class="text-[10px] text-slate-500 tracking-wider">接單流程演示 ‧ 投資人與評審專用版</p>
+                    <div class="flex justify-center gap-2 mt-4">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brand-mint/60"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-brand-mint/20"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-brand-mint/20"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 任務大堂 (TaskPage) ================= -->
+            <div id="task-page" class="absolute inset-0 z-30 bg-brand-navy hidden flex-col justify-between opacity-0 transition-all duration-500 ease-in-out">
+                
+                <!-- 導航頂欄 -->
+                <header class="bg-brand-darkBlue border-b border-brand-midBlue px-6 pt-8 pb-4 flex items-center justify-between shadow-md">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-brand-midBlue flex items-center justify-center border border-brand-mint/20">
+                            <i class="fa-solid fa-person-walking-luggage text-brand-mint text-sm"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-sm font-bold text-white tracking-wide">我要 OnWay</h1>
+                            <span class="text-[9px] text-brand-mint font-medium flex items-center gap-1">
+                                <span class="w-1 h-1 rounded-full bg-brand-mint animate-pulse"></span>
+                                美林邨 ‧ 實時定位
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <!-- 視角切換器 -->
+                        <button onclick="toggleFlowMode()" id="btn-flow-toggle" class="px-2 py-1 rounded-lg bg-brand-midBlue border border-brand-mint/20 hover:border-brand-mint/50 transition-all text-[10px] font-bold text-brand-mint flex items-center gap-1">
+                            <i class="fa-solid fa-arrows-spin"></i>
+                            <span id="flow-toggle-text">切換為發單</span>
+                        </button>
+
+                        <button onclick="openAddTaskModal()" class="w-8 h-8 rounded-lg bg-brand-mint hover:bg-brand-mintHover text-brand-navy flex items-center justify-center font-bold transition-all transform active:scale-90 shadow-glow">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- 主內容滾動區域 -->
+                <main class="flex-1 overflow-y-auto p-4 custom-scroll flex flex-col gap-4">
+                    
+                    <!-- 核心第一步：路線匹配地圖 (對應 Page 4 [01 看]) -->
+                    <div class="bg-brand-darkBlue border border-brand-mint/20 rounded-2xl p-3 flex flex-col gap-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-brand-mint tracking-wider uppercase flex items-center gap-1">
+                                <i class="fa-solid fa-map"></i> 路線匹配器: 500米精準地圖 [cite: 1]
+                            </span>
+                            <span class="text-[8px] px-1 bg-brand-mint/20 text-brand-mint rounded font-semibold">看 ‧ 路線匹配 [cite: 1]</span>
+                        </div>
+                        
+                        <!-- 模擬地圖 SVG -->
+                        <div class="relative w-full h-28 bg-brand-navy rounded-xl border border-brand-midBlue overflow-hidden">
+                            <!-- 背景道路線條 -->
+                            <svg class="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+                                <line x1="10" y1="10" x2="350" y2="10" stroke="#4ECCA3" stroke-width="2" />
+                                <line x1="10" y1="50" x2="350" y2="50" stroke="#4ECCA3" stroke-width="4" stroke-dasharray="4,4" />
+                                <line x1="10" y1="90" x2="350" y2="90" stroke="#4ECCA3" stroke-width="2" />
+                                <line x1="80" y1="0" x2="80" y2="120" stroke="#4ECCA3" stroke-width="2" />
+                                <line x1="220" y1="0" x2="220" y2="120" stroke="#4ECCA3" stroke-width="2" />
+                            </svg>
+                            
+                            <!-- 模擬通勤軌跡 -->
+                            <div class="absolute left-10 top-[50px] -translate-y-1/2 flex items-center gap-1">
+                                <span class="w-2.5 h-2.5 rounded-full bg-brand-mint animate-ping absolute"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-brand-mint relative"></span>
+                                <span class="text-[8px] bg-brand-midBlue text-slate-300 px-1 border border-brand-mint/20 rounded ml-1 font-semibold">起點: 美林商場</span>
+                            </div>
+                            
+                            <div class="absolute right-12 top-[90px] -translate-y-1/2 flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-red-500 relative"></span>
+                                <span class="text-[8px] bg-brand-midBlue text-slate-300 px-1 border border-brand-mint/20 rounded ml-1 font-semibold">終點: 美豐樓</span>
+                            </div>
+
+                            <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M 45 50 Q 150 70 290 90" fill="none" stroke="#4ECCA3" stroke-width="3" stroke-dasharray="6,4" class="animate-pulse" />
+                            </svg>
+
+                            <div class="absolute top-2 right-2 bg-brand-navy/90 border border-brand-mint/30 px-2 py-0.5 rounded text-[8px] text-brand-mint font-bold flex items-center gap-1">
+                                <span class="w-1 h-1 bg-brand-mint rounded-full animate-ping"></span>
+                                沿途 2 單匹配成功 [cite: 1]
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 任務列表區域 -->
+                    <div class="flex-1 flex flex-col gap-2.5">
+                        <div class="flex justify-between items-center px-1">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">在線順路委託 [cite: 1]</span>
+                            <span id="task-filter-badge" class="text-[9px] text-brand-mint bg-brand-mint/10 border border-brand-mint/20 px-1.5 py-0.5 rounded-full">第一階段: 零門檻微物流 [cite: 1]</span>
+                        </div>
+                        
+                        <div id="tasks-feed" class="flex flex-col gap-2.5">
+                            <!-- 任務卡片會通過 JS 動態寫入 -->
+                        </div>
+                    </div>
+
+                </main>
+
+                <!-- 底部導航模擬 -->
+                <footer class="bg-brand-darkBlue border-t border-brand-midBlue px-4 py-2.5 flex items-center justify-around text-slate-500">
+                    <button onclick="switchTab('大堂')" id="tab-lobby" class="flex flex-col items-center gap-0.5 text-brand-mint">
+                        <i class="fa-solid fa-list-check text-xs"></i>
+                        <span class="text-[8px] font-bold">任務大堂</span>
+                    </button>
+                    <button onclick="switchTab('通訊')" id="tab-chat" class="flex flex-col items-center gap-0.5 hover:text-slate-300 transition-colors relative">
+                        <i class="fa-solid fa-comment-nodes text-xs"></i>
+                        <span class="text-[8px]">封閉通訊</span>
+                        <span class="absolute top-0 right-1 w-1.5 h-1.5 bg-brand-mint rounded-full"></span>
+                    </button>
+                    <button onclick="switchTab('風控')" id="tab-security" class="flex flex-col items-center gap-0.5 hover:text-slate-300 transition-colors">
+                        <i class="fa-solid fa-shield-halved text-xs"></i>
+                        <span class="text-[8px]">安全風控</span>
+                    </button>
+                </footer>
+            </div>
+
+            <!-- ================= 封閉通訊沙盒 (ChatPage) ================= -->
+            <div id="chat-page" class="absolute inset-0 z-25 bg-brand-navy hidden flex-col justify-between pt-8 transition-all duration-300">
+                <header class="bg-brand-darkBlue border-b border-brand-midBlue px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-brand-mint/20 flex items-center justify-center text-brand-mint text-xs">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-white">沙盒通訊室 (代號 Runner #04)</h3>
+                            <span class="text-[8px] text-emerald-400">第一防線：AI 語意監管已啟用 [cite: 1]</span>
+                        </div>
+                    </div>
+                    <button onclick="switchTab('大堂')" class="text-xs text-slate-400 hover:text-white">返回</button>
+                </header>
+
+                <!-- 聊天紀錄 -->
+                <div id="chat-messages" class="flex-1 p-4 overflow-y-auto custom-scroll flex flex-col gap-3">
+                    <div class="text-[9px] bg-brand-midBlue/30 text-slate-400 px-3 py-1.5 rounded-lg text-center border border-brand-mint/5">
+                        🔒 聊天內容已全加密。交易完成30分鐘後，此臨時聊天室將自動刪除、永久不留痕跡 [cite: 1]。
+                    </div>
+                    
+                    <div class="flex items-start gap-2 max-w-[85%]">
+                        <div class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-[9px] text-slate-400 shrink-0">發單</div>
+                        <div class="bg-brand-darkBlue border border-slate-800 p-2.5 rounded-r-xl rounded-bl-xl text-xs text-slate-200">
+                            你好，我已經把衣服放在門口了，可以直接代領拿去智能櫃。
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-2 max-w-[85%] self-end flex-row-reverse">
+                        <div class="w-6 h-6 rounded-full bg-brand-mint/20 flex items-center justify-center text-[9px] text-brand-mint shrink-0">您</div>
+                        <div class="bg-brand-mint text-brand-navy font-medium p-2.5 rounded-l-xl rounded-br-xl text-xs">
+                            收到，我這就過去，大約五分鐘到！
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 輸入欄 + 攔截提示 -->
+                <div class="p-3 bg-brand-darkBlue border-t border-brand-midBlue flex flex-col gap-2">
+                    <div id="ai-alert" class="hidden bg-red-950/80 border border-red-500/30 text-red-300 text-[9px] p-2 rounded-lg items-center gap-1.5 animate-bounce">
+                        <i class="fa-solid fa-triangle-exclamation text-red-400"></i>
+                        <span><strong>AI 語意攔截：</strong>偵測到敏感字眼 (香港電話 / WhatsApp)，嚴防私下飛單交易 [cite: 1]！</span>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <input id="chat-input" oninput="checkInterception()" type="text" placeholder="輸入訊息... (可打 91234567 測試攔截)" class="flex-1 bg-brand-lightBlue border border-brand-midBlue rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-mint">
+                        <button onclick="sendChatMessage()" class="px-3 bg-brand-mint text-brand-navy rounded-xl text-xs font-bold hover:bg-brand-mintHover active:scale-95 transition-all">傳送</button>
+                    </div>
+                    <p class="text-[8px] text-slate-500 text-center">提示：試著輸入手寫電話或 “加 WhatsApp 聯絡”，體驗 OCR 與語意識別技術 [cite: 1]。</p>
+                </div>
+            </div>
+
+            <!-- ================= 安全風控面板 (SecurityPage) ================= -->
+            <div id="security-page" class="absolute inset-0 z-25 bg-brand-navy hidden flex-col pt-8 transition-all duration-300">
+                <header class="bg-brand-darkBlue border-b border-brand-midBlue px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-brand-mint/20 flex items-center justify-center text-brand-mint text-xs">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-white">智慧風控防線沙盒</h3>
+                            <span class="text-[8px] text-brand-mint">第二防線：防作弊及詐騙監測 [cite: 1]</span>
+                        </div>
+                    </div>
+                    <button onclick="switchTab('大堂')" class="text-xs text-slate-400 hover:text-white">關閉</button>
+                </header>
+
+                <div class="flex-1 p-4 overflow-y-auto custom-scroll flex flex-col gap-4">
+                    <!-- 風控雷達模擬 -->
+                    <div class="border border-brand-mint/20 bg-brand-darkBlue/60 rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(78,204,163,0.05)_0%,transparent_70%)]"></div>
+                        <div class="w-12 h-12 rounded-full border border-brand-mint/30 flex items-center justify-center text-brand-mint animate-pulse mb-1">
+                            <i class="fa-solid fa-shield-halved text-lg"></i>
+                        </div>
+                        <p class="text-xs font-bold text-white">設備與環境指紋識別中</p>
+                        <p class="text-[9px] text-slate-400">目前運作 IP：203.198.xx.xx (香港寬頻) | 無刷單/多開作弊疑慮 [cite: 1]</p>
+                        
+                        <div class="w-full h-1 bg-brand-midBlue rounded-full overflow-hidden mt-2">
+                            <div class="w-full h-full bg-brand-mint origin-left animate-[pulse_2s_infinite]"></div>
+                        </div>
+                    </div>
+
+                    <!-- 地理圍欄動態演示 (Page 5) -->
+                    <div class="border border-slate-800 bg-brand-darkBlue/30 rounded-xl p-3 flex flex-col gap-2">
+                        <span class="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                            <i class="fa-solid fa-location-crosshairs text-brand-mint"></i> GPS 地理圍欄檢測 (Geo-fencing) [cite: 1]
+                        </span>
+                        <div class="flex items-center justify-between text-[10px] bg-brand-navy p-2 rounded-lg border border-brand-mint/5">
+                            <span class="text-slate-300">提貨/服務點距離：</span>
+                            <span id="geo-status" class="text-brand-mint font-bold flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 bg-brand-mint rounded-full animate-ping"></span>
+                                已抵達 (15米內)
+                            </span>
+                        </div>
+                        <div class="text-[9px] text-slate-500">
+                            *若接單者未實際移至提貨或服務起點，系統將限制其進行完單或觸發後續步驟，嚴防虛假刷單 [cite: 1]。
+                        </div>
+                    </div>
+
+                    <!-- 設備指紋防作弊 -->
+                    <div class="border border-slate-800 bg-brand-darkBlue/30 rounded-xl p-3 flex flex-col gap-2">
+                        <span class="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                            <i class="fa-solid fa-mobile-screen-button text-brand-mint"></i> 設備指紋鎖定機制 [cite: 1]
+                        </span>
+                        <div class="flex items-center justify-between text-[10px] bg-brand-navy p-2 rounded-lg">
+                            <span class="text-slate-400">指紋標籤:</span>
+                            <span class="text-slate-300 font-mono">HK-M820-FINGER-ONWAY</span>
+                        </div>
+                        <div class="text-[9px] text-slate-500">
+                            *同台裝置、同一IP、或具有交叉賬號自導自演「刷單」作弊之用戶，將被實時鎖定凍結，無法取款 [cite: 1]。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 任務詳情與 3-2-3 接單流程彈窗 ================= -->
+            <div id="modal-task-detail" class="absolute inset-0 z-50 bg-black/70 hidden items-end transition-opacity duration-300">
+                <div class="w-full bg-brand-darkBlue rounded-t-[32px] border-t border-brand-mint/30 p-6 flex flex-col gap-4 transform translate-y-full transition-transform duration-300 max-h-[90%] overflow-y-auto custom-scroll">
+                    
+                    <div class="flex items-center justify-between border-b border-brand-midBlue pb-2">
+                        <span class="text-[9px] font-bold text-brand-mint tracking-wider uppercase flex items-center gap-1">
+                            <i class="fa-solid fa-map-pin animate-bounce"></i> 接單端 (我要 OnWay) 工作指引 [cite: 1]
+                        </span>
+                        <button onclick="closeTaskDetailModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-brand-midBlue flex items-center justify-center text-brand-mint border border-brand-mint/10">
+                                <i id="detail-type-icon" class="fa-solid fa-box-open text-base"></i>
+                            </div>
+                            <div>
+                                <h4 id="detail-title" class="text-xs font-bold text-white">幫買凍檸茶與菠蘿油</h4>
+                                <span id="detail-badge" class="inline-block px-1.5 py-0.5 rounded text-[8px] bg-brand-mint/15 text-brand-mint font-bold uppercase mt-1">代購</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 my-1">
+                            <div class="bg-brand-navy p-2.5 rounded-xl border border-brand-midBlue">
+                                <span class="block text-[9px] text-slate-500">送達地點</span>
+                                <span id="detail-location" class="text-xs font-bold text-white">金豪閣 B 座</span>
+                            </div>
+                            <div class="bg-brand-navy p-2.5 rounded-xl border border-brand-midBlue">
+                                <span class="block text-[9px] text-slate-500">順手小費 [cite: 1]</span>
+                                <span id="detail-reward" class="text-xs font-bold text-brand-mint">+$15 HKD</span>
+                            </div>
+                        </div>
+
+                        <!-- 3-2-3 接單工作引導 -->
+                        <div class="border border-brand-mint/10 rounded-xl p-3 bg-brand-navy/60">
+                            <span class="block text-[9px] font-bold text-slate-400 tracking-wider mb-2 uppercase">接單流程 (3-2-3 閉環) [cite: 1]</span>
+                            <div class="flex flex-col gap-2">
+                                <div class="flex items-start gap-2.5">
+                                    <div class="w-4 h-4 rounded bg-brand-mint text-brand-navy flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5">01</div>
+                                    <div class="flex-1">
+                                        <p class="text-[11px] font-bold text-white">【看】路線匹配 [cite: 1]</p>
+                                        <p class="text-[9px] text-slate-400">系統精確匹配您通勤沿途 500 米內的最佳順路訂單 [cite: 1]。</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2.5">
+                                    <div class="w-4 h-4 rounded bg-brand-mint text-brand-navy flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5">02</div>
+                                    <div class="flex-1">
+                                        <p class="text-[11px] font-bold text-white">【接】順路執行 [cite: 1]</p>
+                                        <p class="text-[9px] text-slate-400">一鍵接單，照常通勤，途中完成順道帶貨、代取並即時上傳 [cite: 1]。</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2.5">
+                                    <div class="w-4 h-4 rounded bg-brand-mint text-brand-navy flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5">03</div>
+                                    <div class="flex-1">
+                                        <p class="text-[11px] font-bold text-white">【賺】完單提現 [cite: 1]</p>
+                                        <p class="text-[9px] text-slate-400">掃碼交付後，佣金秒速扣除平台抽成存入錢包 [cite: 1]。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btn-take-task" onclick="acceptTask()" class="w-full py-2.5 rounded-xl bg-brand-mint hover:bg-brand-mintHover text-brand-navy text-xs font-bold transition-all shadow-glow flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>確認順路接單 (我要 OnWay)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= 發單流程彈窗 (幫我 OnWay) ================= -->
+            <div id="modal-add-task" class="absolute inset-0 z-50 bg-black/70 hidden items-end transition-opacity duration-300">
+                <div class="w-full bg-brand-darkBlue rounded-t-[32px] border-t border-brand-mint/30 p-5 flex flex-col gap-3.5 transform translate-y-full transition-transform duration-300 max-h-[85%] overflow-y-auto custom-scroll">
+                    
+                    <div class="flex items-center justify-between border-b border-brand-midBlue pb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-5 h-5 rounded-full bg-brand-mint/10 border border-brand-mint/30 flex items-center justify-center text-brand-mint text-xs font-bold">01</div>
+                            <span class="text-xs font-bold text-white">【填】輸入需求與預算 [cite: 1]</span>
+                        </div>
+                        <button onclick="closeAddTaskModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1">需求類型 (三階段藍圖 Phase 1 & 2) [cite: 1]</label>
+                            <select id="input-category" class="w-full bg-brand-navy border border-brand-midBlue rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-mint">
+                                <option value="代購">🛍️ 第一階段: 代購 (買外賣、零食、茶飲) [cite: 1]</option>
+                                <option value="代領">📦 第一階段: 代領 (代取智能櫃件、順豐、包裹) [cite: 1]</option>
+                                <option value="技能">🔧 第二階段: 技能預約 (上門輔導、家務鐘點) [cite: 1]</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1">需要幫忙什麼？</label>
+                            <input id="input-title" type="text" placeholder="例如：美楓樓大堂代領順豐包裹" class="w-full bg-brand-navy border border-brand-midBlue rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-mint">
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1">送達地點 (限高密度屋苑內)</label>
+                            <input id="input-location" type="text" placeholder="例如：美林邨美楓樓 2201 室" class="w-full bg-brand-navy border border-brand-midBlue rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-mint">
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1">感謝費小費 (HKD)</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-brand-mint">HK$</span>
+                                <input id="input-reward" type="number" placeholder="15" class="w-full bg-brand-navy border border-brand-midBlue rounded-xl pl-10 pr-3 py-2 text-xs text-white focus:outline-none focus:border-brand-mint">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <button onclick="closeAddTaskModal()" class="py-2 rounded-xl border border-brand-midBlue hover:bg-brand-midBlue text-xs text-slate-400 font-bold transition-all">取消</button>
+                        <button onclick="proceedToPayment()" class="py-2 rounded-xl bg-brand-mint hover:bg-brand-mintHover text-brand-navy text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-glow">
+                            <span>下一步付款</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 【付】平台安全託管模擬 (PaymentModal) ================= -->
+            <div id="modal-payment" class="absolute inset-0 z-50 bg-black/70 hidden items-end transition-opacity duration-300">
+                <div class="w-full bg-brand-darkBlue rounded-t-[32px] border-t border-brand-mint/30 p-5 flex flex-col gap-3.5 transform translate-y-full transition-transform duration-300">
+                    
+                    <div class="flex items-center justify-between border-b border-brand-midBlue pb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-5 h-5 rounded-full bg-brand-mint/10 border border-brand-mint/30 flex items-center justify-center text-brand-mint text-xs font-bold">02</div>
+                            <span class="text-xs font-bold text-white">【付】平台託管支付 [cite: 1]</span>
+                        </div>
+                        <button onclick="closePaymentModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    </div>
+
+                    <div class="bg-brand-navy border border-brand-midBlue rounded-2xl p-4 text-center">
+                        <span class="text-[9px] text-slate-400 block uppercase tracking-wider">感謝金已託管在安全帳戶中 [cite: 1]</span>
+                        <h4 id="payment-amount" class="text-2xl font-black text-brand-mint my-1">HK$ 15.00</h4>
+                        <p class="text-[8px] text-slate-500 mt-1">由 PayMe / FPS 提供交易支付，完單憑 QR Code 安全釋放資金 [cite: 1]</p>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <button onclick="executePayment('PayMe')" class="w-full py-2.5 rounded-xl bg-[#E60028] text-white text-xs font-bold hover:bg-[#c30020] transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-play"></i>
+                            <span>使用 PayMe for Business 支付 [cite: 1]</span>
+                        </button>
+                        <button onclick="executePayment('轉數快 (FPS)')" class="w-full py-2.5 rounded-xl bg-[#00A499] text-white text-xs font-bold hover:bg-[#008c82] transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-qrcode"></i>
+                            <span>使用 轉數快 (FPS) 快速支付 [cite: 1]</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 【收】現場掃碼驗收 QR Code 模擬 ================= -->
+            <div id="modal-qr" class="absolute inset-0 z-50 bg-black/70 hidden items-center justify-center p-6 transition-opacity duration-300">
+                <div class="w-full max-w-xs bg-brand-darkBlue rounded-[32px] border border-brand-mint/40 p-5 flex flex-col items-center gap-3.5 text-center transform scale-95 transition-transform duration-300">
+                    
+                    <span class="text-[9px] font-bold text-brand-mint uppercase tracking-widest">【收】安全驗收動態密鑰 [cite: 1]</span>
+                    
+                    <div class="relative w-40 h-40 bg-white p-3 rounded-2xl flex items-center justify-center shadow-lg scanline">
+                        <svg class="w-full h-full text-brand-navy" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M1,1 H7 V7 H1 Z M3,3 V5 H5 V3 Z M17,1 H23 V7 H17 Z M19,3 V5 H21 V3 Z M1,17 H7 V23 H1 Z M3,19 V21 H5 V19 Z"/>
+                            <rect x="9" y="1" width="2" height="4" />
+                            <rect x="13" y="2" width="2" height="2" />
+                            <rect x="9" y="6" width="6" height="2" />
+                            <rect x="1" y="9" width="4" height="2" />
+                            <rect x="7" y="10" width="2" height="5" />
+                            <rect x="10" y="10" width="4" height="2" />
+                            <rect x="16" y="9" width="3" height="3" />
+                            <rect x="21" y="10" width="2" height="4" />
+                            <rect x="1" y="13" width="5" height="2" />
+                            <rect x="11" y="14" width="4" height="3" />
+                            <rect x="17" y="15" width="2" height="2" />
+                            <rect x="20" y="16" width="3" height="2" />
+                            <rect x="1" y="16" width="2" height="4" />
+                            <rect x="4" y="17" width="2" height="2" />
+                            <rect x="9" y="19" width="6" height="2" />
+                            <rect x="17" y="19" width="2" height="4" />
+                            <rect x="21" y="20" width="2" height="3" />
+                        </svg>
+                        <div class="absolute inset-0 border-2 border-brand-mint rounded-2xl"></div>
+                    </div>
+
+                    <div id="qr-countdown" class="text-slate-400 text-[10px]">
+                        密鑰倒數中: <span class="text-brand-mint font-bold" id="countdown-sec">30</span> 秒自動重新整理 [cite: 1]
+                    </div>
+
+                    <div class="text-[10px] text-slate-400 bg-brand-navy p-2 rounded-xl border border-brand-mint/10">
+                        *線下碰面後，接單者直接掃此動態碼即可秒速入賬，杜絕赖賬 [cite: 1]。
+                    </div>
+
+                    <button onclick="finishTaskAndPayout()" class="w-full py-2 rounded-xl bg-brand-mint hover:bg-brand-mintHover text-brand-navy text-xs font-bold transition-all shadow-glow flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>模擬線下掃碼完單 [cite: 1]</span>
+                    </button>
+                    
+                    <button onclick="closeQrModal()" class="text-xs text-slate-500 hover:text-slate-300">取消</button>
+                </div>
+            </div>
+
+            <!-- 全局提示框 -->
+            <div id="toast" class="absolute bottom-16 left-6 right-6 z-50 py-2.5 px-3 rounded-xl bg-brand-mint text-brand-navy font-bold text-xs shadow-glow transition-all duration-300 translate-y-12 opacity-0 pointer-events-none flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span id="toast-text"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 右側：10 頁商業計劃書簡報演示器 & 聯動控制器 -->
+    <div class="flex-1 w-full max-w-2xl flex flex-col gap-4 overflow-y-auto custom-scroll p-1">
+        
+        <!-- 頂部路演狀態欄 -->
+        <div class="bg-brand-darkBlue border border-brand-mint/20 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+                <h2 class="text-base font-black text-white flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-brand-mint animate-ping"></span>
+                    OnWay 順路 ‧ 核心投資路演系統
+                </h2>
+                <p class="text-[11px] text-slate-400 mt-1">
+                    點擊下方簡報頁簽（Slide 1-10），左邊手機模擬器將聯動呈現對應功能情境 [cite: 1]。
+                </p>
+            </div>
+            
+            <div class="flex items-center gap-2 shrink-0">
+                <button onclick="prevSlide()" class="w-8 h-8 rounded-lg bg-brand-midBlue hover:bg-brand-mint/25 text-slate-300 flex items-center justify-center border border-slate-700"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                <span class="text-xs font-bold text-brand-mint" id="slide-index-indicator">Page 1 / 10</span>
+                <button onclick="nextSlide()" class="w-8 h-8 rounded-lg bg-brand-midBlue hover:bg-brand-mint/25 text-slate-300 flex items-center justify-center border border-slate-700"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+            </div>
+        </div>
+
+        <!-- 簡報頁簽導航 (對齊 10頁 PPT) -->
+        <div class="grid grid-cols-5 gap-1.5">
+            <button onclick="showSlide(1)" class="slide-nav-btn active px-1 py-1.5 rounded-lg border border-brand-mint/30 bg-brand-mint text-brand-navy text-[10px] font-black tracking-tighter text-center transition-all">S1:項目定位 [cite: 1]</button>
+            <button onclick="showSlide(2)" class="slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all">S2:香港痛點 [cite: 1]</button>
+            <button onclick="showSlide(3)" class="slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all">S3:核心價值 [cite: 1]</button>
+            <button onclick="showSlide(4)" class="slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all">S4:3-2-3閉環 [cite: 1]</button>
+            <button onclick="showSlide(5)" class="slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all">S5:技術護城 [cite: 1]</button>
+            <button onclick="showSlide(6)" class="slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all">S6:三階戰略 [cite: 1]</button>
+            <button onclick="showSlide(7)" class="slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all">S7:盈利渠道 [cite: 1]</button>
+            <button onclick="showSlide(8)" class="slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all">S8:開發規格 [cite: 1]</button>
+            <button onclick="showSlide(9)" class="slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all">S9:項目里程 [cite: 1]</button>
+            <button onclick="showSlide(10)" class="slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all">S10:投資亮點 [cite: 1]</button>
+        </div>
+
+        <!-- 簡報正文顯示區 -->
+        <div class="relative flex-1 min-h-[460px] bg-brand-navy border border-brand-midBlue rounded-[24px] p-6 flex flex-col justify-between overflow-hidden shadow-xl">
+            <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] opacity-20 [background-size:20px_20px]"></div>
+            
+            <!-- [Page 1] 項目定位 -->
+            <div id="slide-content-1" class="slide-content relative z-10 flex flex-col gap-4">
+                <span class="text-xs font-bold text-brand-mint uppercase tracking-[0.25em]"><i class="fa-solid fa-route mr-1"></i> OnWay 順路 商業計劃書 [cite: 1]</span>
+                <h1 class="text-2xl font-black text-white leading-tight">社區互助 → 技能預約 → 智慧物流生態圈 [cite: 1]</h1>
+                <p class="text-base text-brand-mint font-semibold">「你順路賺茶錢，我付費慳時間！」 [cite: 1]</p>
+                
+                <div class="grid grid-cols-3 gap-3 mt-4">
+                    <div class="bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <span class="block text-[10px] text-slate-500">項目定位 [cite: 1]</span>
+                        <span class="text-xs font-bold text-white mt-1 block">香港高密度屋苑微物流 [cite: 1]</span>
+                    </div>
+                    <div class="bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <span class="block text-[10px] text-slate-500">報告對象 [cite: 1]</span>
+                        <span class="text-xs font-bold text-white mt-1 block">創科評審 / 核心投資人 [cite: 1]</span>
+                    </div>
+                    <div class="bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <span class="block text-[10px] text-slate-500">開發預算 (高防護) [cite: 1]</span>
+                        <span class="text-xs font-bold text-brand-mint mt-1 block">HKD 500K-700K [cite: 1]</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [Page 2] 香港市場痛點 -->
+            <div id="slide-content-2" class="slide-content relative z-10 hidden flex-col gap-4">
+                <span class="text-xs font-bold text-red-400 uppercase tracking-[0.25em]"><i class="fa-solid fa-circle-exclamation mr-1"></i> MARKET PAIN POINTS</span>
+                <h1 class="text-xl font-bold text-white">香港市場痛點：資源白白閒置，街坊兩敗俱傷 [cite: 1]</h1>
+                
+                <div class="flex flex-col gap-3">
+                    <div class="flex gap-3 bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <div class="w-8 h-8 rounded-lg bg-red-950/40 text-red-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-hourglass-half"></i></div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">1. 網購末端物流瓶頸 [cite: 1]</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">放工黃金時間，自提點與智能櫃大排長龍 [cite: 1]。傳統外賣快遞費高昂，難以支持社區內超短距離代辦 [cite: 1]。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <div class="w-8 h-8 rounded-lg bg-red-950/40 text-red-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">2. 本地服務中介嚴重剝削 [cite: 1]</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">鐘點、上門維修、私人補習缺乏透明去中心化平台，傳統中介抽成高達 30%，發單與接單方皆受剝削 [cite: 1]。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <div class="w-8 h-8 rounded-lg bg-red-950/40 text-red-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-ban"></i></div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">3. 每日通勤資源閒置 [cite: 1]</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">香港每日數百萬通勤人口的固定步行與搭車路線，屬於完全未開發、零碳排的「微物流」運力 [cite: 1]。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [Page 3] 核心價值主張 -->
+            <div id="slide-content-3" class="slide-content relative z-10 hidden flex-col gap-4">
+                <span class="text-xs font-bold text-brand-mint uppercase tracking-[0.25em]"><i class="fa-solid fa-heart mr-1"></i> VALUE PROPOSITION</span>
+                <h1 class="text-xl font-bold text-white leading-snug">「活化社區剩餘勞動力，無感降低碳排放」 [cite: 1]</h1>
+                <p class="text-xs text-slate-300">建立高密度、鄰里互信、極速響應的去中心化微物流網絡 [cite: 1]：</p>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-brand-darkBlue p-4 rounded-xl border border-brand-mint/10">
+                        <span class="inline-block px-2 py-0.5 rounded text-[8px] bg-brand-mint/20 text-brand-mint font-bold uppercase mb-2">幫我 OnWay (發單者) [cite: 1]</span>
+                        <p class="text-[10px] text-slate-300 leading-relaxed">
+                            付出微薄小費，省去親自前往排隊、來回折返跑時間，將繁瑣生活雜事無感外判，釋放寶貴休息時間 [cite: 1]。
+                        </p>
+                    </div>
+                    <div class="bg-brand-darkBlue p-4 rounded-xl border border-brand-mint/10">
+                        <span class="inline-block px-2 py-0.5 rounded text-[8px] bg-brand-mint/20 text-brand-mint font-bold uppercase mb-2">我要 OnWay (接單者) [cite: 1]</span>
+                        <p class="text-[10px] text-slate-300 leading-relaxed">
+                            維持既定通勤或步行路線，順路順手為鄰里居民代領代購或提供在地技能，實現零成本低碳變現 [cite: 1]。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [Page 4] 產品核心邏輯 -->
+            <div id="slide-content-4" class="slide-content relative z-10 hidden flex-col gap-4">
+                <span class="text-xs font-bold text-brand-mint uppercase tracking-[0.25em]"><i class="fa-solid fa-gears mr-1"></i> PRODUCT WORKFLOW</span>
+                <h1 class="text-lg font-bold text-white">產品核心邏輯：極簡 3-2-3 交易閉環 [cite: 1]</h1>
+                
+                <div class="flex flex-col gap-2.5">
+                    <div class="bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-brand-mint flex items-center gap-1 mb-1.5">
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i> 發單流程 (幫我 OnWay) [cite: 1]
+                        </span>
+                        <div class="grid grid-cols-3 gap-2 text-[9px] text-slate-300">
+                            <div><strong>01【填】</strong>快速輸入需求、地點與小費預算 [cite: 1]。</div>
+                            <div><strong>02【付】</strong>透過 PayMe / FPS 快速付款，由平台安全託管 [cite: 1]。</div>
+                            <div><strong>03【收】</strong>線下碰面，憑動態 QR Code 驗收完單 [cite: 1]。</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-brand-mint flex items-center gap-1 mb-1.5">
+                            <i class="fa-solid fa-person-walking-arrow-right"></i> 接單流程 (我要 OnWay) [cite: 1]
+                        </span>
+                        <div class="grid grid-cols-3 gap-2 text-[9px] text-slate-300">
+                            <div><strong>01【看】</strong>常用通勤路線精確匹配沿途 500米委託 [cite: 1]。</div>
+                            <div><strong>02【接】</strong>一鍵接單照常通勤，途中順路領貨、代買 [cite: 1]。</div>
+                            <div><strong>03【賺】</strong>線下掃碼交付，佣金秒速到賬，隨時提現 [cite: 1]。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [Page 5] 技術護城河：安全防禦 -->
+            <div id="slide-content-5" class="slide-content relative z-10 hidden flex-col gap-4">
+                <span class="text-xs font-bold text-brand-mint uppercase tracking-[0.25em]"><i class="fa-solid fa-shield-halved mr-1"></i> SECURITY MATRIX</span>
+                <h1 class="text-lg font-bold text-white">技術護城河：雙重防線，嚴防飛單與作弊 [cite: 1]</h1>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-brand-darkBlue p-3.5 rounded-xl border border-brand-mint/10 flex flex-col gap-2">
+                        <span class="text-[10px] font-bold text-brand-mint border-b border-slate-800 pb-1 flex items-center gap-1">
+                            <i class="fa-solid fa-comment-slash"></i> 第一防線：封閉式通訊 [cite: 1]
+                        </span>
+                        <p class="text-[9px] text-slate-300"><strong>AI 語意攔截:</strong> 實時過濾聊天室，自動屏蔽 8 位數香港電話、WhatsApp 連結等私聊字眼 [cite: 1]。</p>
+                        <p class="text-[9px] text-slate-300"><strong>OCR 圖片識別:</strong> 後端自動檢測圖片中手寫聯絡資訊，嚴防「飛單」 [cite: 1]。</p>
+                        <p class="text-[9px] text-slate-300"><strong>動態過期:</strong> 交易完成30分鐘內，聊天通道永久關閉，不留任何隱私痕跡 [cite: 1]。</p>
+                    </div>
+
+                    <div class="bg-brand-darkBlue p-3.5 rounded-xl border border-brand-mint/10 flex flex-col gap-2">
+                        <span class="text-[10px] font-bold text-brand-mint border-b border-slate-800 pb-1 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-nodes"></i> 第二防線：防詐騙風控 [cite: 1]
+                        </span>
+                        <p class="text-[9px] text-slate-300"><strong>設備指紋:</strong> 嚴禁同一設備/同一 IP 下註冊多賬號自導自演「刷單」作弊行為 [cite: 1]。</p>
+                        <p class="text-[9px] text-slate-300"><strong>GPS 地理圍欄:</strong> 實時記錄位置，未實際抵達提貨或服務點，限制完單 [cite: 1]。</p>
+                        <p class="text-[9px] text-slate-300"><strong>動態驗證碼:</strong> 線下交收採用 30 秒自動更新密鑰 QR Code，杜絕賴賬 [cite: 1]。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [Page 6] 三階段發展藍圖 -->
+            <div id="slide-content-6" class="slide-content relative z-10 hidden flex-col gap-4">
+                <span class="text-xs font-bold text-brand-mint uppercase tracking-[0.25em]"><i class="fa-solid fa-chart-line mr-1"></i> DEVELOPMENT ROADMAP</span>
+                <h1 class="text-lg font-bold text-white">三階段戰略發展藍圖：由微物流切入大生態 [cite: 1]</h1>
+                
+                <div class="flex flex-col gap-2.5 text-[9px]">
+                    <div class="flex gap-3 bg-brand-darkBlue p-2.5 rounded-xl border border-brand-mint/20">
+                        <div class="px-2 py-1 bg-brand-mint text-brand-navy font-bold rounded shrink-0 flex items-center justify-center">MVP 階段 [cite: 1]</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">第一階段：P2P 社區順路互助 [cite: 1]</h4>
+                            <p class="text-slate-400 mt-0.5">聚焦於代領、代購、全步行微物流。零門檻快速分裂，極速建立用戶高黏性路線資料庫 [cite: 1]。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 bg-brand-darkBlue p-2.5 rounded-xl border border-slate-800">
+                        <div class="px-2 py-1 bg-brand-midBlue text-brand-mint font-bold rounded shrink-0 flex items-center justify-center">中程擴張 [cite: 1]</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">第二階段：在地技能預約服務 [cite: 1]</h4>
+                            <p class="text-slate-400 mt-0.5">解鎖上門美容、家務鐘點、私人補習與家居維修，切入高客單價、高利潤率、高頻次的本地生活服務 [cite: 1]。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 bg-brand-darkBlue p-2.5 rounded-xl border border-slate-800">
+                        <div class="px-2 py-1 bg-brand-midBlue text-slate-400 font-bold rounded shrink-0 flex items-center justify-center">完整生態 [cite: 1]</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">第三階段：貨運與商用大物流 [cite: 1]</h4>
+                            <p class="text-slate-400 mt-0.5">引入客貨車 (Van仔) 及大噸位貨車預約調配，切入商用大搬屋、商戶批發及 B2B 完整物流市場 [cite: 1]。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [Page 7] 商業與變現模式 -->
+            <div id="slide-content-7" class="slide-content relative z-10 hidden flex-col gap-4">
+                <span class="text-xs font-bold text-brand-mint uppercase tracking-[0.25em]"><i class="fa-solid fa-coins mr-1"></i> REVENUE MODEL</span>
+                <h1 class="text-lg font-bold text-white">商業與變現模式：極速裂變，穩定流水 [cite: 1]</h1>
+                
+                <div class="bg-brand-darkBlue p-3 rounded-xl border border-brand-mint/5 flex items-center justify-between">
+                    <div>
+                        <span class="text-[9px] text-brand-mint font-bold block uppercase tracking-wider">用戶端零門檻戰術 [cite: 1]</span>
+                        <p class="text-[10px] text-slate-300 mt-1 leading-relaxed">
+                            永久免年費、零門檻註冊、免商家上架費、免廣告打擾 [cite: 1]。<br>最大程度降低客戶獲取成本 (CAC)，將早期利潤全數回饋街坊 [cite: 1]。
+                        </p>
+                    </div>
+                    <div class="w-16 h-16 rounded-full border border-brand-mint/20 flex items-center justify-center text-brand-mint text-xl shrink-0 ml-4"><i class="fa-solid fa-percent"></i></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-[9px]">
+                    <div class="bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <h4 class="text-xs font-bold text-white flex items-center gap-1 mb-1"><i class="fa-solid fa-sack-dollar text-brand-mint"></i> 10% - 15% 交易佣金 [cite: 1]</h4>
+                        <p class="text-slate-400">在每筆成功交易中，抽取固定的平台維護服務費作為主要利潤源 [cite: 1]。</p>
+                    </div>
+                    <div class="bg-brand-darkBlue p-3 rounded-xl border border-slate-800">
+                        <h4 class="text-xs font-bold text-white flex items-center gap-1 mb-1"><i class="fa-solid fa-chart-line text-brand-mint"></i> 託管資金沉澱收益 [cite: 1]</h4>
+                        <p class="text-slate-400">發單先扣、完單發放的資金託管機制（Cash Float），為平台在交收期內創造穩定的利息沉澱收益 [cite: 1]。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [Page 8] 開發預算與技術規格 -->
+            <div id="slide-content-8" class="slide-content relative z-10 hidden flex-col gap-4">
+                <span class="text-xs font-bold text-brand-mint uppercase tracking-[0.25em]"><i class="fa-solid fa-microchip mr-1"></i> BUDGET & TECH SPECS</span>
+                <h1 class="text-lg font-bold text-white">開發預算與技術規格 (預算範圍: HKD 500K-700K) [cite: 1]</h1>
+                
+                <div class="overflow-x-auto custom-scroll border border-slate-800 rounded-xl">
+                    <table class="w-full text-left border-collapse text-[9px]">
+                        <thead>
+                            <tr class="bg-brand-darkBlue text-brand-mint border-b border-slate-800">
+                                <th class="p-2 font-bold">研發模組 [cite: 1]</th>
+                                <th class="p-2 font-bold">預算 (HKD) [cite: 1]</th>
+                                <th class="p-2 font-bold">技術選型/交付規格 [cite: 1]</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 bg-brand-navy/50">
+                            <tr>
+                                <td class="p-2 font-semibold text-white">UI/UX 設計 [cite: 1]</td>
+                                <td class="p-2 text-brand-mint">$60K - $80K [cite: 1]</td>
+                                <td class="p-2 text-slate-400">香港本地用戶體驗優化、Figma 高保真原型 [cite: 1]。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-semibold text-white">前端跨端開發 [cite: 1]</td>
+                                <td class="p-2 text-brand-mint" rowspan="2">$380K - $470K [cite: 1]<br><span class="text-[8px] text-slate-500">(含後端與風控)</span></td>
+                                <td class="p-2 text-slate-400">Flutter 框架、Mapbox 實時定位渲染、動態 QR Code [cite: 1]。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-semibold text-white">後端/風控引擎 [cite: 1]</td>
+                                <td class="p-2 text-slate-400">Node.js (NestJS) + PostgreSQL、WebSockets、AI過濾 [cite: 1]。</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-semibold text-white">QA / 安全審查 [cite: 1]</td>
+                                <td class="p-2 text-brand-mint">$80K - $110K [cite: 1]</td>
+                                <td class="p-2 text-slate-400">防刷單防禦測試、律師樓全面隱私 PDPO 合規審查 [cite: 1]。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- [Page 9] 項目時程與資金里程碑 -->
+            <div id="slide-content-9" class="slide-content relative z-10 hidden flex-col gap-4">
+                <span class="text-xs font-bold text-brand-mint uppercase tracking-[0.25em]"><i class="fa-solid fa-calendar-days mr-1"></i> TIMELINE & MILESTONES</span>
+                <h1 class="text-lg font-bold text-white">項目時程與資金劃撥里程碑 (5個月交付上架) [cite: 1]</h1>
+                
+                <div class="grid grid-cols-5 gap-1.5 text-center text-[9px]">
+                    <div class="bg-brand-darkBlue p-2.5 rounded-xl border border-brand-mint/20">
+                        <span class="text-[10px] font-bold text-brand-mint block mb-1">M1</span>
+                        <p class="font-bold text-white">項目啟動 [cite: 1]</p>
+                        <p class="text-slate-500 mt-1">付款 20% [cite: 1]<br>UI/UX 品牌定位與系統需求書 [cite: 1]</p>
+                    </div>
+                    <div class="bg-brand-darkBlue p-2.5 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-400 block mb-1">M2-3</span>
+                        <p class="font-bold text-white">核心開發 [cite: 1]</p>
+                        <p class="text-slate-500 mt-1">付款 30% [cite: 1]<br>後端核心風控防刷單與 AI 通訊 [cite: 1]</p>
+                    </div>
+                    <div class="bg-brand-darkBlue p-2.5 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-400 block mb-1">M4</span>
+                        <p class="font-bold text-white">金流閉環 [cite: 1]</p>
+                        <p class="text-slate-500 mt-1">付款 25% [cite: 1]<br>Mapbox 定位、PayMe & FPS 接口 [cite: 1]</p>
+                    </div>
+                    <div class="bg-brand-darkBlue p-2.5 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-400 block mb-1">M5</span>
+                        <p class="font-bold text-white">用戶驗收 [cite: 1]</p>
+                        <p class="text-slate-500 mt-1">付款 15% [cite: 1]<br>招募 500 名種子用戶沙盒封測 [cite: 1]</p>
+                    </div>
+                    <div class="bg-brand-darkBlue p-2.5 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-brand-mint block mb-1">完工</span>
+                        <p class="font-bold text-white">正式上架 [cite: 1]</p>
+                        <p class="text-slate-500 mt-1">付款 10% [cite: 1]<br>iOS & Android 審查上架，保固 [cite: 1]</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [Page 10] 投資亮點與項目願景 -->
+            <div id="slide-content-10" class="slide-content relative z-10 hidden flex-col gap-4">
+                <span class="text-xs font-bold text-brand-mint uppercase tracking-[0.25em]"><i class="fa-solid fa-award mr-1"></i> INVESTMENT HIGHLIGHTS</span>
+                <h1 class="text-xl font-black text-white leading-tight">用最接地氣的共享服務，共創高回報社區生態圈！ [cite: 1]</h1>
+                
+                <div class="flex flex-col gap-2">
+                    <div class="flex gap-2.5 bg-brand-darkBlue p-2 rounded-xl border border-slate-800">
+                        <div class="w-6 h-6 rounded-lg bg-brand-mint/10 text-brand-mint flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-earth-asia"></i></div>
+                        <div>
+                            <h4 class="text-[11px] font-bold text-white">優勢地理土壤 [cite: 1]</h4>
+                            <p class="text-[9px] text-slate-400">香港擁有全球最高住宅與人口密度，是鄰里互助與微物流之完美試驗場 [cite: 1]。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2.5 bg-brand-darkBlue p-2 rounded-xl border border-slate-800">
+                        <div class="w-6 h-6 rounded-lg bg-brand-mint/10 text-brand-mint flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-chart-line"></i></div>
+                        <div>
+                            <h4 class="text-[11px] font-bold text-white">極低獲客成本 & 高協同效能 [cite: 1]</h4>
+                            <p class="text-[9px] text-slate-400">以第一階段剛需的「順路微物流」鎖定流量，再完美無縫導入高利潤的「技能預約」 [cite: 1]。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2.5 bg-brand-darkBlue p-2 rounded-xl border border-slate-800">
+                        <div class="w-6 h-6 rounded-lg bg-brand-mint/10 text-brand-mint flex items-center justify-center shrink-0 text-xs"><i class="fa-solid fa-leaf"></i></div>
+                        <div>
+                            <h4 class="text-[11px] font-bold text-white">低碳 ESG 政策支持 [cite: 1]</h4>
+                            <p class="text-[9px] text-slate-400">全步行/公共網絡的低碳模式符合 ESG 潮流，極易申請港府創科基金支持 [cite: 1]。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 簡報頁底 -->
+            <div class="relative z-10 flex justify-between items-center border-t border-brand-midBlue pt-4 mt-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-5 h-5 rounded-md bg-brand-midBlue border border-brand-mint/20 flex items-center justify-center">
+                        <i class="fa-solid fa-route text-brand-mint text-[10px]"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-400 font-semibold">OnWay 順路 ‧ 創科投標路演方案 [cite: 1]</span>
+                </div>
+                
+                <span class="text-[9px] text-brand-mint bg-brand-mint/10 px-2 py-0.5 rounded font-bold">創科評審與投資人專用 [cite: 1]</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= 核心邏輯與互動事件 ================= -->
+    <script>
+        // 模擬香港沙田與美林邨屋苑的實時數據庫 [cite: 1]
+        let currentTasks = [
+            {
+                id: 1,
+                title: '幫買凍檸茶與菠蘿油 (下午茶)',
+                location: '沙田美林商場 2 號舖 順德冰室',
+                targetLocation: '美林邨美楓樓 B座 2415室',
+                reward: '15',
+                category: '代購',
+                icon: 'fa-cart-shopping'
+            },
+            {
+                id: 2,
+                title: '順路帶廚餘垃圾下樓 [cite: 1]',
+                location: '美林邨美雅樓 1204室',
+                targetLocation: '美雅樓地下大堂垃圾站',
+                reward: '10',
+                category: '代領',
+                icon: 'fa-trash-can'
+            },
+            {
+                id: 3,
+                title: '順豐智能櫃代取件 (中件包裹) [cite: 1]',
+                location: '美林商場 1 樓順豐智能櫃',
+                targetLocation: '美林邨美桃樓 7 樓',
+                reward: '12',
+                category: '代領',
+                icon: 'fa-box-archive'
+            }
+        ];
+
+        let selectedTask = null;
+        let flowMode = '我要 OnWay'; // "我要 OnWay" (接單) 或 "幫我 OnWay" (發單) [cite: 1]
+        let tempCreatedTask = null;
+        let qrTimer = null;
+        let activeSlideIndex = 1;
+
+        // 初始化渲染任務列表
+        function renderTasks() {
+            const feed = document.getElementById('tasks-feed');
+            feed.innerHTML = '';
+
+            currentTasks.forEach(task => {
+                const card = document.createElement('div');
+                card.className = "bg-brand-darkBlue border border-white/5 rounded-2xl p-3 flex items-center justify-between gap-3 hover:border-brand-mint/30 transition-all cursor-pointer active:scale-[0.98]";
+                card.onclick = () => showTaskDetails(task);
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-brand-midBlue flex items-center justify-center text-brand-mint border border-brand-mint/10">
+                            <i class="fa-solid ${task.icon} text-xs"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white leading-snug">${task.title}</h4>
+                            <span class="text-[9px] text-slate-400 mt-1 block flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-[8px] text-brand-mint"></i>
+                                ${task.location}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="text-xs font-black text-brand-mint">+$${task.reward}</span>
+                        <span class="block text-[7px] text-slate-500 mt-0.5 font-bold uppercase">${task.category}</span>
+                    </div>
+                `;
+                feed.appendChild(card);
+            });
+        }
+
+        // 頁面切換導航
+        function navigateTo(pageId) {
+            const startPage = document.getElementById('start-page');
+            const taskPage = document.getElementById('task-page');
+
+            if (pageId === 'task-page') {
+                startPage.classList.add('opacity-0');
+                setTimeout(() => {
+                    startPage.classList.add('hidden');
+                    taskPage.classList.remove('hidden');
+                    setTimeout(() => {
+                        taskPage.classList.remove('opacity-0');
+                        taskPage.classList.add('opacity-100');
+                    }, 50);
+                }, 400);
+            }
+        }
+
+        // 切換接單與發單視角 [cite: 1]
+        function toggleFlowMode() {
+            const toggleText = document.getElementById('flow-toggle-text');
+            const filterBadge = document.getElementById('task-filter-badge');
+
+            if (flowMode === '我要 OnWay') {
+                flowMode = '幫我 OnWay';
+                toggleText.innerText = "切換為接單";
+                filterBadge.innerText = "幫我 OnWay: 【填 ‧ 付 ‧ 收】模式 [cite: 1]";
+                showToast("已切換為：幫我 OnWay (發單端) [cite: 1]");
+                // 自動跳轉到發布需求彈窗，以便演示
+                setTimeout(() => {
+                    openAddTaskModal();
+                }, 300);
+            } else {
+                flowMode = '我要 OnWay';
+                toggleText.innerText = "切換為發單";
+                filterBadge.innerText = "第一階段: 零門檻微物流 [cite: 1]";
+                showToast("已切換為：我要 OnWay (接單端) [cite: 1]");
+            }
+        }
+
+        // 底部導航欄 Tab 切換
+        function switchTab(tabName) {
+            const lobbyBtn = document.getElementById('tab-lobby');
+            const chatBtn = document.getElementById('tab-chat');
+            const securityBtn = document.getElementById('tab-security');
+
+            const chatPage = document.getElementById('chat-page');
+            const securityPage = document.getElementById('security-page');
+
+            // 復原按鈕顏色
+            lobbyBtn.className = "flex flex-col items-center gap-0.5 text-slate-500";
+            chatBtn.className = "flex flex-col items-center gap-0.5 text-slate-500 relative";
+            securityBtn.className = "flex flex-col items-center gap-0.5 text-slate-500";
+
+            chatPage.classList.add('hidden');
+            securityPage.classList.add('hidden');
+
+            if (tabName === '大堂') {
+                lobbyBtn.className = "flex flex-col items-center gap-0.5 text-brand-mint";
+            } else if (tabName === '通訊') {
+                chatBtn.className = "flex flex-col items-center gap-0.5 text-brand-mint relative";
+                chatPage.classList.remove('hidden');
+                chatPage.classList.add('flex');
+            } else if (tabName === '風控') {
+                securityBtn.className = "flex flex-col items-center gap-0.5 text-brand-mint";
+                securityPage.classList.remove('hidden');
+                securityPage.classList.add('flex');
+            }
+        }
+
+        // 顯示通知提示框
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-12');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-12');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+
+        // ==================== 彈窗與金流邏輯 ====================
+
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.querySelector('div').classList.remove('translate-y-full', 'scale-95');
+            }, 50);
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.querySelector('div').classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        // 接單詳情
+        function showTaskDetails(task) {
+            selectedTask = task;
+            document.getElementById('detail-title').textContent = task.title;
+            document.getElementById('detail-location').textContent = task.location;
+            document.getElementById('detail-reward').textContent = `+$${task.reward} HKD`;
+            document.getElementById('detail-badge').textContent = task.category;
+            document.getElementById('detail-type-icon').className = `fa-solid ${task.icon} text-base`;
+
+            openModal('modal-task-detail');
+        }
+
+        function closeTaskDetailModal() {
+            closeModal('modal-task-detail');
+        }
+
+        // 確認接單 -> 觸發第二防線（GPS 判定 ＋ 產生動態密鑰） [cite: 1]
+        function acceptTask() {
+            closeTaskDetailModal();
+            setTimeout(() => {
+                showToast("【我要 OnWay】順路接單成功！請前往提貨點 [cite: 1]");
+                
+                // 模擬 1 秒後接單人到抵提貨點，產生安全二維碼 [cite: 1]
+                setTimeout(() => {
+                    startQrTimer();
+                    openModal('modal-qr');
+                }, 1200);
+            }, 350);
+        }
+
+        // 動態密鑰 30 秒刷新機制 (Slide 5) [cite: 1]
+        function startQrTimer() {
+            let seconds = 30;
+            const indicator = document.getElementById('countdown-sec');
+            indicator.textContent = seconds;
+
+            clearInterval(qrTimer);
+            qrTimer = setInterval(() => {
+                seconds--;
+                indicator.textContent = seconds;
+                if (seconds <= 0) {
+                    seconds = 30;
+                    indicator.textContent = seconds;
+                    showToast("🛡️ 風控提示：防詐騙動態安全密鑰已自動刷新！ [cite: 1]");
+                }
+            }, 1000);
+        }
+
+        function closeQrModal() {
+            clearInterval(qrTimer);
+            closeModal('modal-qr');
+        }
+
+        // 線下交付與資金秒釋放完單模擬 [cite: 1]
+        function finishTaskAndPayout() {
+            closeQrModal();
+            setTimeout(() => {
+                showToast(`💸 驗收成功！小費已扣除 10% 佣金劃入您的錢包 [cite: 1]！`);
+                if (selectedTask) {
+                    currentTasks = currentTasks.filter(t => t.id !== selectedTask.id);
+                    renderTasks();
+                }
+            }, 350);
+        }
+
+        // 發佈新任務 (幫我 OnWay) [cite: 1]
+        function openAddTaskModal() {
+            openModal('modal-add-task');
+        }
+
+        function closeAddTaskModal() {
+            closeModal('modal-add-task');
+        }
+
+        function proceedToPayment() {
+            const title = document.getElementById('input-title').value.trim();
+            const location = document.getElementById('input-location').value.trim();
+            const reward = document.getElementById('input-reward').value.trim();
+            const category = document.getElementById('input-category').value;
+
+            if (!title || !location || !reward) {
+                showToast("⚠️ 請完整填寫委託欄位");
+                return;
+            }
+
+            tempCreatedTask = {
+                id: Date.now(),
+                title: `${category === '代購' ? '🛍️' : (category === '代領' ? '📦' : '🔧')} ${title}`,
+                location: location,
+                reward: reward,
+                category: category,
+                icon: category === '代購' ? 'fa-cart-shopping' : (category === '代領' ? 'fa-box-archive' : 'fa-screwdriver-wrench')
+            };
+
+            document.getElementById('payment-amount').textContent = `HK$ ${parseFloat(reward).toFixed(2)}`;
+            closeAddTaskModal();
+            setTimeout(() => {
+                openModal('modal-payment');
+            }, 350);
+        }
+
+        function closePaymentModal() {
+            closeModal('modal-payment');
+        }
+
+        // 模擬託管付款成功
+        function executePayment(method) {
+            closePaymentModal();
+            setTimeout(() => {
+                showToast(`🔒 透過 ${method} 付款成功！資金已安全託管於平台中 [cite: 1]`);
+                if (tempCreatedTask) {
+                    currentTasks.unshift(tempCreatedTask);
+                    renderTasks();
+                }
+                
+                // 清空輸入框
+                document.getElementById('input-title').value = '';
+                document.getElementById('input-location').value = '';
+                document.getElementById('input-reward').value = '';
+            }, 400);
+        }
+
+        // ==================== 第一防線：AI 語意監管模擬 ====================
+        function checkInterception() {
+            const input = document.getElementById('chat-input').value;
+            const alertBox = document.getElementById('ai-alert');
+            
+            // 偵測香港 8 位數手機格式，或常見私下溝通字眼（WhatsApp、加我等） [cite: 1]
+            const phoneRegex = /[2-9]\d{7}/;
+            const keywordRegex = /(whatsapp|whats app|聯絡|電話|飛單|私下|手寫|加我|微信|wechat)/i;
+
+            if (phoneRegex.test(input) || keywordRegex.test(input)) {
+                alertBox.classList.remove('hidden');
+                alertBox.classList.add('flex');
+            } else {
+                alertBox.classList.remove('flex');
+                alertBox.classList.add('hidden');
+            }
+        }
+
+        function sendChatMessage() {
+            const inputField = document.getElementById('chat-input');
+            const alertBox = document.getElementById('ai-alert');
+            const message = inputField.value.trim();
+
+            if (!message) return;
+
+            // 檢查是否包含攔截字
+            const phoneRegex = /[2-9]\d{7}/;
+            const keywordRegex = /(whatsapp|whats app|聯絡|電話|飛單|私下|手寫|加我|微信|wechat)/i;
+
+            if (phoneRegex.test(message) || keywordRegex.test(message)) {
+                showToast("❌ 訊息發送失敗！已被第一防線 AI 風控攔截 [cite: 1]！");
+                return;
+            }
+
+            // 成功傳送
+            const chatMessages = document.getElementById('chat-messages');
+            const userMsg = document.createElement('div');
+            userMsg.className = "flex items-start gap-2 max-w-[85%] self-end flex-row-reverse";
+            userMsg.innerHTML = `
+                <div class="w-6 h-6 rounded-full bg-brand-mint/20 flex items-center justify-center text-[9px] text-brand-mint shrink-0">您</div>
+                <div class="bg-brand-mint text-brand-navy font-medium p-2.5 rounded-l-xl rounded-br-xl text-xs">
+                    ${message}
+                </div>
+            `;
+            chatMessages.appendChild(userMsg);
+            inputField.value = '';
+            alertBox.classList.add('hidden');
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // ==================== 聯動簡報控制系統 ====================
+        function showSlide(index) {
+            activeSlideIndex = index;
+
+            // 切換 PPT 標籤高亮
+            document.querySelectorAll('.slide-nav-btn').forEach((btn, idx) => {
+                if (idx + 1 === index) {
+                    btn.className = "slide-nav-btn active px-1 py-1.5 rounded-lg border border-brand-mint/30 bg-brand-mint text-brand-navy text-[10px] font-black tracking-tighter text-center transition-all";
+                } else {
+                    btn.className = "slide-nav-btn px-1 py-1.5 rounded-lg border border-slate-800 bg-brand-darkBlue text-slate-400 text-[10px] font-bold tracking-tighter text-center transition-all";
+                }
+            });
+
+            // 切換 PPT 內容
+            document.querySelectorAll('.slide-content').forEach((slide, idx) => {
+                if (idx + 1 === index) {
+                    slide.classList.remove('hidden');
+                    slide.classList.add('flex');
+                } else {
+                    slide.classList.add('hidden');
+                    slide.classList.remove('flex');
+                }
+            });
+
+            // 更新頁碼指示
+            document.getElementById('slide-index-indicator').textContent = `Page ${index} / 10`;
+
+            // 聯動手機模擬器展示對應狀態
+            syncAppToSlide(index);
+        }
+
+        function nextSlide() {
+            let next = activeSlideIndex + 1;
+            if (next > 10) next = 1;
+            showSlide(next);
+        }
+
+        function prevSlide() {
+            let prev = activeSlideIndex - 1;
+            if (prev < 1) prev = 10;
+            showSlide(prev);
+        }
+
+        // 最強亮點：手機模擬器與 PPT 聯動
+        function syncAppToSlide(slideIndex) {
+            // 每次切換幻燈片時，優雅引導手機端
+            if (slideIndex === 1) {
+                // 起點首頁
+                document.getElementById('start-page').classList.remove('hidden', 'opacity-0');
+                document.getElementById('task-page').classList.add('hidden', 'opacity-0');
+            } else {
+                // 進入大堂
+                document.getElementById('start-page').classList.add('hidden', 'opacity-0');
+                document.getElementById('task-page').classList.remove('hidden');
+                document.getElementById('task-page').classList.remove('opacity-0');
+                document.getElementById('task-page').classList.add('opacity-100');
+            }
+
+            if (slideIndex === 4) {
+                // 3-2-3 閉環 -> 自動高亮展示 1 號任務詳情 [cite: 1]
+                switchTab('大堂');
+                showToast("簡報聯動：已為您展示【3-2-3 接單工作指引】[cite: 1]");
+                showTaskDetails(currentTasks[0]);
+            } else if (slideIndex === 5) {
+                // 技術護城河 -> 自動切換到通訊室沙盒，提示輸入測試 [cite: 1]
+                closeTaskDetailModal();
+                switchTab('通訊');
+                showToast("簡報聯動：已切換至【第一防線 AI 攔截通訊室】 [cite: 1]");
+                document.getElementById('chat-input').value = "請加我 WhatsApp 91234567 聯絡";
+                checkInterception();
+            } else if (slideIndex === 6) {
+                // 三階段戰略藍圖 -> 大堂分類過濾
+                closeTaskDetailModal();
+                switchTab('大堂');
+                showToast("簡報聯動：大堂正在顯示【第一階段 MVP】在線任務 [cite: 1]");
+            } else if (slideIndex === 10) {
+                // 亮點 -> 展示安全風控中心
+                switchTab('風控');
+                showToast("簡報聯動：展示【第二防線：地理圍欄與指紋風控】[cite: 1]");
+            } else {
+                // 其他 slide 復原大堂主畫面
+                closeTaskDetailModal();
+                switchTab('大堂');
+            }
+        }
+
+        window.onload = function() {
+            renderTasks();
+            showSlide(1); // 默認第一頁定位
+        };
+    </script>
+</body>
+</html>
